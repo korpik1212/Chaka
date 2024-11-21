@@ -6,5 +6,7 @@ using UnityEngine;
 public class CardData : ScriptableObject
 {
     public string cardName;
+    public Sprite cardSprite;
+    public float defaultManaCost;
     public AbilityTargetHandler.TargetingType targetingType;
 }

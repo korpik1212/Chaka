@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class CardLibary : MonoBehaviour
 {
+    public static CardLibary instance;
+
+    private void Awake()
+    {
+        if (instance != null) Destroy(this);
+        if (instance == null) instance = this;
+    }
     public List<Card> cards = new List<Card>();
     public Dictionary<string, CardData> cardDatas = new Dictionary<string, CardData>();
     private void Start()

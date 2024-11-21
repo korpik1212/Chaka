@@ -7,6 +7,7 @@ public class AbilityTargetHandler : MonoBehaviour
     //TODO: Should be only working on the local client 
 
 
+
     public static AbilityTargetHandler instance;
     private void Awake()
     {
@@ -14,11 +15,14 @@ public class AbilityTargetHandler : MonoBehaviour
         if (instance == null) instance = this;
     }
 
-    public Card currentlySelectedCard;
+    public CardObject currentlySelectedCardObject;
     bool currentlyTargeting = false;
     public TargetingType targetingType;
 
     public IHighlightable currentlyHighlightedObject;
+
+    public Texture2D enemyCursor, enemyHighlightCursor, freeCursor, defaulCursor;
+
     public enum TargetingType
     {
         Free,
@@ -26,14 +30,22 @@ public class AbilityTargetHandler : MonoBehaviour
         none
     }
 
-    public void SelectCard(Card card)
+    public void SelectCard(CardObject cardObject)
     {
-        currentlySelectedCard = card;
-        targetingType = card.cardData.targetingType;
-        
+        currentlySelectedCardObject = cardObject;
+        targetingType =cardObject.card.cardData.targetingType;
+
         currentlyTargeting = true;
-        //check targeting mode 
-        //
+
+        if(targetingType == TargetingType.Enemy)
+        {
+            Cursor.SetCursor(enemyCursor, Vector2.zero, CursorMode.Auto);
+        }
+
+        if(targetingType== TargetingType.Free)
+        {
+            Cursor.SetCursor(freeCursor, Vector2.zero, CursorMode.Auto);
+        }
     }
 
 
@@ -50,7 +62,7 @@ public class AbilityTargetHandler : MonoBehaviour
 
         if (targetingType == TargetingType.Free)
         {
-
+            LookForFree();
         }
 
     }
@@ -60,7 +72,7 @@ public class AbilityTargetHandler : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             AbilityTarget abilityTarget = new AbilityTarget();
-            currentlySelectedCard.Cast(abilityTarget);
+            currentlySelectedCardObject.Cast(abilityTarget);
         }
     }
     public void LookForEnemies()
@@ -69,43 +81,57 @@ public class AbilityTargetHandler : MonoBehaviour
 
 
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-       
-        if (Physics.Raycast(ray, out hit))
+        Collider2D hit = Physics2D.OverlapCircle(Camera.main.ScreenToWorldPoint(Input.mousePosition), 0.5f);
+        EnemyObject enemey = hit?.gameObject.GetComponent<EnemyObject>();
+        if (enemey != currentlyHighlightedObject)
         {
 
-            Debug.Log("Clicked on: " + hit.collider.gameObject.name);
+            currentlyHighlightedObject?.UnHighLight();
+            currentlyHighlightedObject = null;
+            Cursor.SetCursor(enemyCursor, Vector2.zero, CursorMode.Auto);
+
+        }
+
+        if (hit)
+        {
+
+            Debug.Log("is over object");
+
+           
 
             if (hit.transform.TryGetComponent(out EnemyObject e))
             {
-
+                Debug.Log("is enemy");
 
 
                 if (currentlyHighlightedObject != e)
                 {
-                    if(currentlyHighlightedObject != null)
-                    {
-
-                        currentlyHighlightedObject.UnHighLight();
-                    }
+                    Debug.Log("isnt currently seleced");
+                  
                     currentlyHighlightedObject = e;
+                    Cursor.SetCursor(enemyHighlightCursor, Vector2.zero, CursorMode.Auto);
                     e.Highlight();
                 }
                 if (Input.GetMouseButtonDown(0))
                 {
                     AbilityTarget abilityTarget = new AbilityTarget();
                     abilityTarget.enemy = e;
-                    currentlySelectedCard.Cast(abilityTarget);
+                    currentlySelectedCardObject.Cast(abilityTarget);
+                    EndTargeting();
+
                 }
 
-               
+
             }
 
         }
 
-
-      
     }
 
+
+
+    public void EndTargeting()
+    {
+        currentlyTargeting = false;
+    }
 }

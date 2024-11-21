@@ -1,3 +1,4 @@
+using FishNet.Object;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +9,7 @@ public class HandManager : MonoBehaviour
 
     public class HandState
     {
-        public List<Card.CardState> cards = new List<Card.CardState>();
+        public List<CardState> cards = new List<CardState>();
     }
 
     public HandState handState = new HandState();
@@ -16,14 +17,33 @@ public class HandManager : MonoBehaviour
     public List<HandSlot> handSlots = new List<HandSlot>();
 
     public Card selectedCard = null;
+    public DeckManager deckManager;
 
     // when you play a card you get a new card on the exact same spot
     //there might be discard effects that get rid of a card without playing 
     //there might be targeted draw effects 
+
+    // TODO: temporary, remove this 
+    private void Start()
+    {
+        GetDebugCards();
+    }
+
+    public CardData debugData;
+    public CardData debugData2;
+    public void GetDebugCards()
+    {
+
+     foreach(HandSlot slot in handSlots)
+        {
+            slot.occupyingCard.card = new Card(debugData);
+        }
+
+        handSlots[2].occupyingCard.card = new Card(debugData2);
+    }
     public void GetNewCardAtSlot(int slot)
     {
-        RemoveCard(slot);
-        AddNextCard(slot);
+        AddNextCardServerRPC(slot);
     }
 
     private void Update()
@@ -36,6 +56,7 @@ public class HandManager : MonoBehaviour
 
     public void SelectCard(int slot)
     {
+        Debug.Log("try select");
         handSlots[slot].occupyingCard.Select();
 
         selectedCard = handSlots[slot].occupyingCard.card;
@@ -44,12 +65,32 @@ public class HandManager : MonoBehaviour
 
     void RemoveCard(int slot)
     {
-        //networking stuff
+        handSlots[slot].occupyingCard.RemoveEffect();
+        handSlots[slot].occupyingCard.card = null;
     }
 
-    void AddNextCard(int slot)
+    void AddCard(CardState card,int slot)
+    {
+        handSlots[slot].occupyingCard.card = new Card(card);
+        handSlots[slot].occupyingCard.card.cardData = debugData;
+        handSlots[slot].occupyingCard.SetCard(handSlots[slot].occupyingCard.card);
+    }
+
+    //Server RPc
+    void AddNextCardServerRPC(int slot)
     {
         //networking stuff 
+       Card card= deckManager.GetNextCard();
+       AddNextCardObserverRPC(card.cardState,slot);
+
+
+    }
+
+    //Observer rpc
+    void AddNextCardObserverRPC(CardState cardState,int slot)
+    {
+        RemoveCard(slot);
+        AddCard(cardState, slot);
     }
 
    

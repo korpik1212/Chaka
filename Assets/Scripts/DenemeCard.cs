@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DenemeCard : Card
 {
-    CardManager abilityManager;
+    DeckManager abilityManager;
 
     public int counter;
   
