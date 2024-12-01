@@ -40,6 +40,7 @@ public class DeckManager : MonoBehaviour
     //observerrpc
     public void SyncState(DeckState state)
     {
+        /*
         deckState = state;
 
         cards.Clear();
@@ -49,6 +50,7 @@ public class DeckManager : MonoBehaviour
             card.cardState=cardState;
             cards.Add(card);
         }
+       */
 
     }
 

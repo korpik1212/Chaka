@@ -20,10 +20,7 @@ public class Card
         cardState.manaCost = (int)cardData.defaultManaCost;
     }
 
-    public Card(CardState cardState)
-    {
-        this.cardState = cardState;
-    }
+  
   
     public CardData cardData;
     public CardState cardState;
@@ -31,7 +28,7 @@ public class Card
     {
 
     }
-    // Cleanup: might be redundant
+    // Cleanup: might be redundant, looks reduntant
     public virtual void Select()
     {
 

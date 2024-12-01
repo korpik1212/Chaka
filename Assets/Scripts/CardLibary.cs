@@ -22,16 +22,24 @@ public class CardLibary : MonoBehaviour
 
     public void ConstructDataList()
     {
-        var allAvaibleStatusEffectDatas = Resources.LoadAll<CardData>("Cards");
+        var allAvaibleCardDatas = Resources.LoadAll<CardData>("Cards");
 
-        foreach(CardData c in allAvaibleStatusEffectDatas)
+        foreach(CardData c in allAvaibleCardDatas)
         {
             cardDatas.Add(c.cardName, c);
         }
     }
-
+  
+         //TODO: Populate this 
     public void ConstructCardsList()
     {
         cards.Add(new DenemeCard(cardDatas["DenemeCard"]));
+    }
+
+
+
+   public CardData GetCardData(string cardName)
+    {
+        return cardDatas[cardName];
     }
 }

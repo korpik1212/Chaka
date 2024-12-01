@@ -32,6 +32,8 @@ public class AbilityTargetHandler : MonoBehaviour
 
     public void SelectCard(CardObject cardObject)
     {
+
+        currentlySelectedCardObject?.handSlot.OnCardDeSelected();
         currentlySelectedCardObject = cardObject;
         targetingType =cardObject.card.cardData.targetingType;
 
@@ -73,6 +75,8 @@ public class AbilityTargetHandler : MonoBehaviour
         {
             AbilityTarget abilityTarget = new AbilityTarget();
             currentlySelectedCardObject.Cast(abilityTarget);
+            EndTargeting();
+
         }
     }
     public void LookForEnemies()
@@ -110,6 +114,7 @@ public class AbilityTargetHandler : MonoBehaviour
                   
                     currentlyHighlightedObject = e;
                     Cursor.SetCursor(enemyHighlightCursor, Vector2.zero, CursorMode.Auto);
+                    Debug.Log("highlighting enemy");
                     e.Highlight();
                 }
                 if (Input.GetMouseButtonDown(0))
@@ -117,6 +122,8 @@ public class AbilityTargetHandler : MonoBehaviour
                     AbilityTarget abilityTarget = new AbilityTarget();
                     abilityTarget.enemy = e;
                     currentlySelectedCardObject.Cast(abilityTarget);
+                    e.UnHighLight();
+
                     EndTargeting();
 
                 }
@@ -133,5 +140,7 @@ public class AbilityTargetHandler : MonoBehaviour
     public void EndTargeting()
     {
         currentlyTargeting = false;
+        Cursor.SetCursor(defaulCursor, Vector2.zero, CursorMode.Auto);
+
     }
 }

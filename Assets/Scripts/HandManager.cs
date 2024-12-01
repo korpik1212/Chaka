@@ -19,6 +19,8 @@ public class HandManager : MonoBehaviour
     public Card selectedCard = null;
     public DeckManager deckManager;
 
+    public CardObject cardObjectPrefab;
+        
     // when you play a card you get a new card on the exact same spot
     //there might be discard effects that get rid of a card without playing 
     //there might be targeted draw effects 
@@ -31,19 +33,35 @@ public class HandManager : MonoBehaviour
 
     public CardData debugData;
     public CardData debugData2;
+
+
+    //TODO: occupying card baþlangýçta boþ olmalý 
     public void GetDebugCards()
     {
 
      foreach(HandSlot slot in handSlots)
         {
-            slot.occupyingCard.card = new Card(debugData);
+            Card card = new Card(debugData);
+            CardObject cardObject = Instantiate(cardObjectPrefab, slot.transform);
+            cardObject.InitializeCardObject(card, slot);
+            cardObject.OnCardCast.AddListener(GetNewCardAtSlot);
         }
+        Card card2 = new Card(debugData2);
+        CardObject cardObject2 = Instantiate(cardObjectPrefab, handSlots[2].transform);
+        cardObject2.InitializeCardObject(card2, handSlots[2]);
+        cardObject2.OnCardCast.AddListener(GetNewCardAtSlot);
 
-        handSlots[2].occupyingCard.card = new Card(debugData2);
+
     }
     public void GetNewCardAtSlot(int slot)
     {
-        AddNextCardServerRPC(slot);
+
+        Card card = deckManager.GetNextCard();
+        CardObject cardObject = Instantiate(cardObjectPrefab, handSlots[slot].transform);
+        cardObject.InitializeCardObject(card, handSlots[slot]);
+        cardObject.OnCardCast.AddListener(GetNewCardAtSlot);
+
+        //  AddNextCardServerRPC(slot);
     }
 
     private void Update()
@@ -57,24 +75,12 @@ public class HandManager : MonoBehaviour
     public void SelectCard(int slot)
     {
         Debug.Log("try select");
-        handSlots[slot].occupyingCard.Select();
+        handSlots[slot].currentlyOccupyingCardObject.SelectCard();
 
-        selectedCard = handSlots[slot].occupyingCard.card;
+        selectedCard = handSlots[slot].currentlyOccupyingCardObject.card;
     }
 
 
-    void RemoveCard(int slot)
-    {
-        handSlots[slot].occupyingCard.RemoveEffect();
-        handSlots[slot].occupyingCard.card = null;
-    }
-
-    void AddCard(CardState card,int slot)
-    {
-        handSlots[slot].occupyingCard.card = new Card(card);
-        handSlots[slot].occupyingCard.card.cardData = debugData;
-        handSlots[slot].occupyingCard.SetCard(handSlots[slot].occupyingCard.card);
-    }
 
     //Server RPc
     void AddNextCardServerRPC(int slot)
@@ -89,8 +95,10 @@ public class HandManager : MonoBehaviour
     //Observer rpc
     void AddNextCardObserverRPC(CardState cardState,int slot)
     {
+        /*
         RemoveCard(slot);
         AddCard(cardState, slot);
+        */
     }
 
    

@@ -2,52 +2,65 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
-
+using DG.Tweening;
 public class CardObject : MonoBehaviour, IPointerClickHandler
 {
     public Card card;
     public Image cardImage;
     public TextMeshProUGUI manaCostText;
 
-
+    [HideInInspector]
+    public HandSlot handSlot;
     //TODO: Set the followign 2 variable
 
-    public HandManager handManager;
-    public int slot;
 
-    public void SetCard(Card card)
+
+    public UnityEvent<int> OnCardCast;
+
+    public void InitializeCardObject(Card card,HandSlot handSlot)
     {
         this.card = card;
-        Debug.Log(card.cardData);
+        this.card.cardData = card.cardData;
         cardImage.sprite= card.cardData.cardSprite;
-                
+        this.handSlot = handSlot;
+        handSlot.currentlyOccupyingCardObject = this;
+        
     }
+
+
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("card clicked");
-        AbilityTargetHandler.instance.SelectCard(this);
+        SelectCard();
     }
 
-
-    public void Select()
+    public void SelectCard()
     {
         card.Select();
         AbilityTargetHandler.instance.SelectCard(this);
-
+        Debug.Log(handSlot);
+        handSlot.OnCardSelected();
     }
+
 
 
     public void Cast(AbilityTarget abilityTarget)
     {
+        handSlot.OnCardDeSelected();
+
         card.Cast(abilityTarget);
-        handManager.GetNewCardAtSlot(slot);
+        OnCardCast?.Invoke(handSlot.slotIndex);
+        DestroyCard();
     }
 
-    public void RemoveEffect()
+    public void DestroyCard()
     {
+        this.transform.DOMoveY(500, 0.5f).SetEase(Ease.InOutBack);
+        Destroy(this.gameObject,0.5f);
+        //destro
         //TODO get the current carddata, create a temproray effect with that card data 
     }
 
