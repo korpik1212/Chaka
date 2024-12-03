@@ -10,6 +10,9 @@ public class Card
 
 
     //TODO I'm not sure if I should construct it with card data or card state or nothing at all 
+ 
+    //get rid of state class and put them inside this class as sync vars 
+    //later make a list of Card class in hand manager and deck manager 
 
     public Card(CardData cardData)
     {
@@ -17,7 +20,7 @@ public class Card
         //TODO: set card state
 
         cardState = new CardState();
-        cardState.manaCost = (int)cardData.defaultManaCost;
+      //  cardState.manaCost = (int)cardData.defaultManaCost;
     }
 
   
@@ -35,8 +38,11 @@ public class Card
     }
 
 
-    public void Cast(AbilityTarget abilityTarget)
+    public virtual void Cast(AbilityTarget abilityTarget)
     {
+
+
+
         if(cardData.targetingType == AbilityTargetHandler.TargetingType.Enemy)
         {
             Debug.Log("ability getting casted at" + abilityTarget.enemy.name);
@@ -60,9 +66,11 @@ public class AbilityTarget
 
 public class CardState
 {
-    public Guid abilityID;
+    public Guid AbilityDataID;
+    public Guid AbilityReffrenceID;
 
-    public int manaCost;
+
+   //public int manaCost;
    public Dictionary<string, float> values = new Dictionary<string, float>();
 
 

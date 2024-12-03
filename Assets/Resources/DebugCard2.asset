@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: DebugCard2
   m_EditorClassIdentifier: 
   cardName: DebugCard
+  cardSprite: {fileID: 0}
+  defaultManaCost: 1
   targetingType: 1

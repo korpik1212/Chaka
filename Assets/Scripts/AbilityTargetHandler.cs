@@ -89,10 +89,9 @@ public class AbilityTargetHandler : MonoBehaviour
         EnemyObject enemey = hit?.gameObject.GetComponent<EnemyObject>();
         if (enemey != currentlyHighlightedObject)
         {
-
-            currentlyHighlightedObject?.UnHighLight();
-            currentlyHighlightedObject = null;
-            Cursor.SetCursor(enemyCursor, Vector2.zero, CursorMode.Auto);
+                currentlyHighlightedObject?.UnHighLight();
+                currentlyHighlightedObject = null;
+                Cursor.SetCursor(enemyCursor, Vector2.zero, CursorMode.Auto);
 
         }
 
@@ -110,19 +109,20 @@ public class AbilityTargetHandler : MonoBehaviour
 
                 if (currentlyHighlightedObject != e)
                 {
+
                     Debug.Log("isnt currently seleced");
                   
                     currentlyHighlightedObject = e;
                     Cursor.SetCursor(enemyHighlightCursor, Vector2.zero, CursorMode.Auto);
                     Debug.Log("highlighting enemy");
-                    e.Highlight();
+                    e?.Highlight();
                 }
                 if (Input.GetMouseButtonDown(0))
                 {
                     AbilityTarget abilityTarget = new AbilityTarget();
                     abilityTarget.enemy = e;
                     currentlySelectedCardObject.Cast(abilityTarget);
-                    e.UnHighLight();
+                    e?.UnHighLight();
 
                     EndTargeting();
 

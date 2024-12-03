@@ -29,11 +29,11 @@ public class DeckManager : MonoBehaviour
 
     public void AddDebugCards()
     {
-        cards.Add(new Card(debugData));
-        cards.Add(new Card(debugData));
-        cards.Add(new Card(debugData));
-        cards.Add(new Card(debugData));
-        cards.Add(new Card(debugData));
+        cards.Add(new StrikeCard(debugData));
+        cards.Add(new StrikeCard(debugData));
+        cards.Add(new StrikeCard(debugData));
+        cards.Add(new StrikeCard(debugData));
+        cards.Add(new StrikeCard(debugData));
     }
 
 
@@ -58,7 +58,7 @@ public class DeckManager : MonoBehaviour
     public void RegisterCardServerRPC(CardState cardState)
     {
         //auth check
-        cardState.abilityID=Guid.NewGuid();
+        cardState.AbilityDataID=Guid.NewGuid();
         AddCardObserverRPC(cardState);
     }
 

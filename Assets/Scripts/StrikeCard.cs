@@ -7,4 +7,12 @@ public class StrikeCard : Card
     public StrikeCard(CardData cardData) : base(cardData)
     {
     }
+
+    public override void Cast(AbilityTarget abilityTarget)
+    {
+        Debug.Log("casting strike card");
+
+        abilityTarget.enemy.enemyHPManager.TakeDamage(50);
+        base.Cast(abilityTarget);
+    }
 }

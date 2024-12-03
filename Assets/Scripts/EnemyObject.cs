@@ -4,6 +4,7 @@ using UnityEngine;
 using FishNet;
 using UnityEngine.UI;
 using FishNet.Object.Synchronizing;
+using TMPro;
 
 public class EnemyObject : MonoBehaviour,IHighlightable
 {
@@ -14,9 +15,13 @@ public class EnemyObject : MonoBehaviour,IHighlightable
 
     public List<Intent_SO> possibleIntents = new List<Intent_SO>();
     public Image intentImage, intentFiller;
+    public TextMeshProUGUI intentValueText;
 
     public Intent_SO currentIntentData;
     public float intentCharge = 0;
+
+
+    public EnemyHPManager enemyHPManager;
     public class EnemyState
     {
         public float hp;
@@ -59,6 +64,7 @@ public class EnemyObject : MonoBehaviour,IHighlightable
         intentFiller.sprite= currentIntentData.intentSprite;
         intentFiller.color= currentIntentData.intentChargeColor;
         intentFiller.fillAmount = intentCharge / currentIntentData.IntentCD;
+        intentValueText.text = currentIntentData.intentValue.ToString();
     }
 
     public void DoIntent()
@@ -66,8 +72,16 @@ public class EnemyObject : MonoBehaviour,IHighlightable
         if (currentIntentData.intentType == Intent_SO.IntentType.Attack)
         {
             Debug.Log("Attacking player");
+            PlayerHealthManager target = TargetSelectionLogic();
+            target.TakeDamage(currentIntentData.intentValue);
+            
         }
 
+    }
+
+    public PlayerHealthManager TargetSelectionLogic()
+    {
+        return FindObjectOfType<PlayerHealthManager>();
     }
 
     //serverrpc
@@ -101,6 +115,7 @@ public class EnemyObject : MonoBehaviour,IHighlightable
     }
     public void UnHighLight()
     {
+        if (targetHighlighter == null) return;
         targetHighlighter.enabled = false;
 
     }

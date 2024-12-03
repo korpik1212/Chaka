@@ -20,7 +20,9 @@ public class HandManager : MonoBehaviour
     public DeckManager deckManager;
 
     public CardObject cardObjectPrefab;
-        
+
+
+    public InGamePlayerManager playerManager;
     // when you play a card you get a new card on the exact same spot
     //there might be discard effects that get rid of a card without playing 
     //there might be targeted draw effects 
@@ -28,6 +30,8 @@ public class HandManager : MonoBehaviour
     // TODO: temporary, remove this 
     private void Start()
     {
+        playerManager = GetComponentInParent<InGamePlayerManager>();
+
         GetDebugCards();
     }
 
@@ -43,12 +47,13 @@ public class HandManager : MonoBehaviour
         {
             Card card = new Card(debugData);
             CardObject cardObject = Instantiate(cardObjectPrefab, slot.transform);
-            cardObject.InitializeCardObject(card, slot);
+            cardObject.InitializeCardObject(card, slot,playerManager);
             cardObject.OnCardCast.AddListener(GetNewCardAtSlot);
         }
-        Card card2 = new Card(debugData2);
+        handSlots[2].currentlyOccupyingCardObject.DestroyCard();
+        Card card2 = new StrikeCard(debugData2);
         CardObject cardObject2 = Instantiate(cardObjectPrefab, handSlots[2].transform);
-        cardObject2.InitializeCardObject(card2, handSlots[2]);
+        cardObject2.InitializeCardObject(card2, handSlots[2],playerManager);
         cardObject2.OnCardCast.AddListener(GetNewCardAtSlot);
 
 
@@ -58,7 +63,7 @@ public class HandManager : MonoBehaviour
 
         Card card = deckManager.GetNextCard();
         CardObject cardObject = Instantiate(cardObjectPrefab, handSlots[slot].transform);
-        cardObject.InitializeCardObject(card, handSlots[slot]);
+        cardObject.InitializeCardObject(card, handSlots[slot], playerManager);
         cardObject.OnCardCast.AddListener(GetNewCardAtSlot);
 
         //  AddNextCardServerRPC(slot);
@@ -74,7 +79,6 @@ public class HandManager : MonoBehaviour
 
     public void SelectCard(int slot)
     {
-        Debug.Log("try select");
         handSlots[slot].currentlyOccupyingCardObject.SelectCard();
 
         selectedCard = handSlots[slot].currentlyOccupyingCardObject.card;

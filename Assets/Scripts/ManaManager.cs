@@ -10,12 +10,16 @@ public class ManaManager : MonoBehaviour
     public TextMeshProUGUI manaText;
 
     public float currentMana = 0;
-    public int maxMana = 100;
+    public float maxMana = 100;
 
 
 
     private void FixedUpdate()
     {
+        if (currentMana >= maxMana)
+        {
+            return;
+        }
         currentMana += Time.fixedDeltaTime;
         UpdateManaUI();
     }
@@ -24,7 +28,15 @@ public class ManaManager : MonoBehaviour
     public void UpdateManaUI()
     {
         manaFiller.fillAmount = currentMana / maxMana;
-        manaText.text = currentMana + "/" + maxMana;
+        manaText.text = currentMana.ToString("0.0") + "/" + maxMana.ToString("0");
+    }
+
+
+    public void SpendMana(float amount)
+    {
+        currentMana -= amount;
+        UpdateManaUI();
+
     }
 
 }

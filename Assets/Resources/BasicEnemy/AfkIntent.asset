@@ -16,4 +16,4 @@ MonoBehaviour:
   intentSprite: {fileID: 21300000, guid: 3bb6689b31e01614d90368eb6f58f5fa, type: 3}
   intentChargeColor: {r: 1, g: 0.7222867, b: 0.34509802, a: 1}
   IntentCD: 6
-  intentValue: 55
+  intentValue: 0

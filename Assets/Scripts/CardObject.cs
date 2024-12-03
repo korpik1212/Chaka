@@ -20,11 +20,14 @@ public class CardObject : MonoBehaviour, IPointerClickHandler
 
     public UnityEvent<int> OnCardCast;
 
-    public void InitializeCardObject(Card card,HandSlot handSlot)
+    public InGamePlayerManager inGamePlayerManager;
+    public void InitializeCardObject(Card card,HandSlot handSlot,InGamePlayerManager inGamePlayerManager)
     {
+        this.inGamePlayerManager = inGamePlayerManager;
         this.card = card;
         this.card.cardData = card.cardData;
         cardImage.sprite= card.cardData.cardSprite;
+        manaCostText.text = card.cardData.defaultManaCost.ToString();
         this.handSlot = handSlot;
         handSlot.currentlyOccupyingCardObject = this;
         
@@ -49,8 +52,18 @@ public class CardObject : MonoBehaviour, IPointerClickHandler
 
     public void Cast(AbilityTarget abilityTarget)
     {
-        handSlot.OnCardDeSelected();
+        float manaCost= card.cardData.defaultManaCost;
 
+        if(manaCost> inGamePlayerManager.manaManager.currentMana)
+        {
+            Debug.Log("Not enough mana");
+            return;
+        }
+
+        inGamePlayerManager.manaManager.SpendMana(manaCost); 
+        //managing mana manager reffrence here is not very smart, hmm maybe player reffrence ? 
+
+        handSlot.OnCardDeSelected();
         card.Cast(abilityTarget);
         OnCardCast?.Invoke(handSlot.slotIndex);
         DestroyCard();
