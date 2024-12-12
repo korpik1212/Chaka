@@ -1,3 +1,4 @@
+using FishNet;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -34,7 +35,9 @@ public class EnemyWaveManager : MonoBehaviour
     public void SpawnEnemy(EnemyObject enemyPrefab, int slot)
     {
         Debug.Log("eenemy spawned");
+        
         EnemyObject e = Instantiate(enemyPrefab, spawnPositions[slot], Quaternion.identity);
+        InstanceFinder.ServerManager.Spawn(e.gameObject);
         currentlySpawnedEnemyObjects.Add(e);
     }
 

@@ -401,6 +401,7 @@ GameObject:
   - component: {fileID: 2912079217073228007}
   - component: {fileID: 7462767168325052854}
   - component: {fileID: 6610575884902983070}
+  - component: {fileID: 818341743617809415}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -490,6 +491,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0152ce07c11c9d048bc6eee95274169c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 0
+  _addedNetworkObject: {fileID: 818341743617809415}
+  _networkObjectCache: {fileID: 0}
   targetHighlighter: {fileID: 3925048013306285332}
   possibleIntents:
   - {fileID: 11400000, guid: 261620e1a29da034b8fb8bc5dc8dd24a, type: 2}
@@ -558,11 +562,63 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5594b957cc0cb741a00975fdb6184df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _componentIndexCache: 1
+  _addedNetworkObject: {fileID: 818341743617809415}
+  _networkObjectCache: {fileID: 0}
   maxHealth: 100
-  currentHealth: 0
   healtbarFiller: {fileID: 7344204098120243925}
   healthText: {fileID: 2194573352650136653}
   enemyObject: {fileID: 2912079217073228007}
+--- !u!114 &818341743617809415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5559249296250180498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26b716c41e9b56b4baafaf13a523ba2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <IsNested>k__BackingField: 0
+  <ComponentIndex>k__BackingField: 0
+  <PredictedSpawn>k__BackingField: {fileID: 0}
+  <PredictedOwner>k__BackingField: {fileID: 0}
+  NetworkBehaviours: []
+  InitializedParentNetworkBehaviour: {fileID: 0}
+  InitializedNestedNetworkObjects: []
+  RuntimeParentNetworkBehaviour: {fileID: 0}
+  RuntimeChildNetworkBehaviours: []
+  _isNetworked: 1
+  _isSpawnable: 1
+  _isGlobal: 0
+  _initializeOrder: 0
+  _preventDespawnOnDisconnect: 0
+  _defaultDespawnType: 0
+  _initializedValusSet: 0
+  NetworkObserver: {fileID: 0}
+  _enablePrediction: 0
+  _predictionType: 0
+  _graphicalObject: {fileID: 0}
+  _detachGraphicalObject: 0
+  _enableStateForwarding: 1
+  _networkTransform: {fileID: 0}
+  _ownerInterpolation: 1
+  _ownerSmoothedProperties: 255
+  _adaptiveInterpolation: 3
+  _spectatorSmoothedProperties: 255
+  _spectatorInterpolation: 2
+  _enableTeleport: 0
+  _teleportThreshold: 1
+  <PrefabId>k__BackingField: 65535
+  <SpawnableCollectionId>k__BackingField: 0
+  <AssetPathHash>k__BackingField: 18362098637497489287
+  <SceneId>k__BackingField: 0
+  SerializedTransformProperties:
+    Position: {x: 0, y: 0, z: 0}
+    Rotation: {x: 0, y: 0, z: 0, w: 0}
+    LocalScale: {x: 0, y: 0, z: 0}
 --- !u!1 &6580454906571338422
 GameObject:
   m_ObjectHideFlags: 0

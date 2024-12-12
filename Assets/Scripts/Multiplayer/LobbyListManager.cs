@@ -94,7 +94,6 @@ public class LobbyListManager : MonoBehaviour
         foreach(CSteamID lobbyID in lobbyIDs)
         {
             LobbyListObject obj= Instantiate(lobbyListObjectPrefab, lobbyGrid.transform);
-            Debug.Log(SteamConnectionManager.GetPlayerAvatar(SteamMatchmaking.GetLobbyOwner(lobbyID)));
             obj.Initialize(SteamMatchmaking.GetLobbyData(lobbyID,"name"),SteamMatchmaking.GetNumLobbyMembers(lobbyID),SteamConnectionManager.GetPlayerAvatar(SteamMatchmaking.GetLobbyOwner(lobbyID)), lobbyID);
             listOfLobies.Add(obj.gameObject);
         }

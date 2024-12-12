@@ -19,27 +19,34 @@ public class EventManager : MonoBehaviour
         }
     }
 
-
+    [Header("runs x^2 times")]
     public UnityEvent<PlayerClient> onPlayerClientInstantiated;
-    public UnityEvent onFishnetInitialized;
     public UnityEvent<PlayerClient> onPlayerAssignedToSession;
+    public UnityEvent<PlayerClient> onPlayerClientStateUpdated;
+    public UnityEvent onFishnetInitialized;
+   
 
     public void PlayerClientInstantiated(PlayerClient playerClient)
     {
-        onPlayerClientInstantiated.Invoke(playerClient);
+        onPlayerClientInstantiated?.Invoke(playerClient);
     }
 
     public void FishnetInitialized()
     {
 
-       onFishnetInitialized.Invoke();
+       onFishnetInitialized?.Invoke();
     }
 
     public void PlayerAssignedToSession(PlayerClient playerClient)
     {
-        onPlayerAssignedToSession.Invoke(playerClient);
+        onPlayerAssignedToSession?.Invoke(playerClient);
     }
 
+
+    public void PlayerClientStateUpdated(PlayerClient playerClient)
+    {
+        onPlayerClientStateUpdated?.Invoke(playerClient);
+    }
 
 }
 

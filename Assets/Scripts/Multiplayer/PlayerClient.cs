@@ -4,6 +4,7 @@ using FishNet.Object;
 using Steamworks;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class PlayerClient : NetworkBehaviour
@@ -32,54 +33,51 @@ public class PlayerClient : NetworkBehaviour
     }
 
     */
-   
+
+    public TextMeshProUGUI clientData;
+
     public CSteamID steamID;
     public string playerName;
     public NetworkConnection owner;
 
     public override void OnOwnershipClient(NetworkConnection prevOwner)
     {
-       
 
+
+
+        //you only set at the owner client but try to feed in the data from the server client, thats a no no 
+
+        //so then that was the problem
+        //local data 
         
-        steamID = SteamUser.GetSteamID();
-        owner = base.Owner;
-        playerName= SteamFriends.GetPersonaName();
-        EventManager.instance.PlayerClientInstantiated(this);
-        EventManager.instance.onFishnetInitialized.AddListener(AssignToSessionManager);
-
-       
-    }
-
-
-
-    public void AssignToSessionManager()
-    {
-
         if (base.IsOwner)
         {
-            UpdatePlayerClientStateServerRPC(this);
-            SessionManager.instance.AssignPlayerClient(this);
+            steamID = SteamUser.GetSteamID();
+            owner = base.Owner;
+            playerName = SteamFriends.GetPersonaName();
+            Debug.Log("I am the owner of: " + playerName);
+
+            string s = "";
+            s+=steamID.ToString()+"\n";
+            s+=playerName+"\n";
+            s+=owner.ClientId.ToString()+"\n";
+            clientData.text = s;
+
+            SetPlayerClientDataServerRPC(steamID,owner,playerName);
+
+
+             EventManager.instance.onFishnetInitialized.AddListener(AssignToSessionManager);
 
         }
-    }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdatePlayerClientStateServerRPC(PlayerClient client)
-    {
-        UpdatePlayerClientStateObserverRPC(client);
-    }
 
-    [ObserversRpc]
-    public void UpdatePlayerClientStateObserverRPC(PlayerClient client)
-    {
-        steamID = client.steamID;
-        playerName = client.playerName;
-        owner = client.owner;
+        if (!base.IsOwner && !IsServerInitialized)
+        {
+            UpdatePlayerClientStateServerRPC();
+        }
 
-        Debug.Log(client.steamID + " assigned");
-        Debug.Log(client.playerName + " assigned");
-        Debug.Log(client.owner + " assigned");
+        EventManager.instance.PlayerClientInstantiated(this);
+
     }
 
 
@@ -90,6 +88,45 @@ public class PlayerClient : NetworkBehaviour
     {
         base.OnStartClient();
 
+
+    }
+
+    public void AssignToSessionManager()
+    {
+        SessionManager.instance.AssignPlayerClient(this);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetPlayerClientDataServerRPC(CSteamID steamID,NetworkConnection owner,string playerName)
+    {
+        this.steamID = steamID;
+        this.owner = owner;
+        this.playerName = playerName;
+
+
+        UpdatePlayerClientStateServerRPC();
+       
+    }
+
+
+    [ServerRpc(RequireOwnership =false)]
+    public void UpdatePlayerClientStateServerRPC()
+    {
+        UpdatePlayerClientStateObserverRPC(steamID,owner,playerName);
+    }
+
+
+
+    [ObserversRpc]
+    public void UpdatePlayerClientStateObserverRPC(CSteamID steamID, NetworkConnection owner, string playerName)
+    {
+        this.steamID = steamID;
+        this.playerName = playerName;
+        this.owner = owner;
+
+        EventManager.instance.PlayerClientStateUpdated(this);
+        Debug.Log(steamID + " UPDATED");
+        Debug.Log(playerName + " UPDATED");
     }
 
 
@@ -97,6 +134,12 @@ public class PlayerClient : NetworkBehaviour
 
 
    
+
+
+
+
+
+
 
 
 

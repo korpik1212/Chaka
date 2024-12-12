@@ -12,7 +12,7 @@ public class StrikeCard : Card
     {
         Debug.Log("casting strike card");
 
-        abilityTarget.enemy.enemyHPManager.TakeDamage(50);
+        abilityTarget.enemy.enemyHPManager.TakeDamageServerRPC(50);
         base.Cast(abilityTarget);
     }
 }

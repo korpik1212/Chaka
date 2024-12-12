@@ -6,6 +6,7 @@ using FishNet.Connection;
 using FishNet.Object;
 using FishNet.Object.Synchronizing;
 using Steamworks;
+using TMPro;
 
 public class SessionManager : NetworkBehaviour
 {
@@ -24,7 +25,6 @@ public class SessionManager : NetworkBehaviour
     }
 
 
-
     public override void OnStartClient()
     {
         /* This is called on each client when the object
@@ -35,13 +35,22 @@ public class SessionManager : NetworkBehaviour
         Debug.Log("client started");
     }
 
+    public TextMeshProUGUI currentConnections;
 
 
-    public readonly SyncList<PlayerClient> Clients = new SyncList<PlayerClient>();
+    public readonly SyncList<PlayerClient> playerClients = new SyncList<PlayerClient>();
 
 
+    private void Update()
+    {
+        string s="";
+        foreach (var item in playerClients)
+        {
+            s += item.playerName + "\n";
+        }
+        currentConnections.text = s;
+    }
 
-   
     public void AssignPlayerClient(PlayerClient playerClient)
     {
         AssignPlayerClientServerRPC(playerClient);
@@ -51,27 +60,28 @@ public class SessionManager : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void AssignPlayerClientServerRPC(PlayerClient playerClient)
     {
-        Clients.Add(playerClient);
+        playerClients.Add(playerClient);
         AssignPlayerClientObserverRPC(playerClient);
-        Debug.Log("adding player client to list, list count : " + Clients.Count);
+        Debug.Log("adding player client to list, list count : " + playerClients.Count);
 
     }
     [ObserversRpc]
     public void AssignPlayerClientObserverRPC(PlayerClient playerClient)
     {
-        EventManager.instance.onPlayerAssignedToSession?.Invoke(playerClient);
+        //just make sure its synced
+        EventManager.instance.PlayerAssignedToSession(playerClient);
     }
 
 
 
     public PlayerClient GetPlayerClientBySteamID(CSteamID cSteamID)
     {
-        return Clients.Find(x => x.steamID == cSteamID);
+        return playerClients.Find(x => x.steamID == cSteamID);
     }
 
 
     public PlayerClient GetPlayerClientByNetworkConnection(NetworkConnection networkConnection)
     {
-        return Clients.Find(x => x.owner == networkConnection);
+        return playerClients.Find(x => x.owner == networkConnection);
     }
 }

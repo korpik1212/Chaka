@@ -30,7 +30,7 @@ public class MainMenuManager : MonoBehaviour
     public GameObject starterPanel, lobbyPanel, lobbyList;
     public void CreateLobby()
     {
-
+        Debug.Log(SteamConnectionManager.instance);
         SteamConnectionManager.instance.CreateLobby();
     }
 

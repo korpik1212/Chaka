@@ -18,10 +18,17 @@ public class LobyViewManager : MonoBehaviour
     private void Start()
     {
         LobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        EventManager.instance.onPlayerClientStateUpdated.AddListener(Temp);
         EventManager.instance.onPlayerAssignedToSession.AddListener(Temp);
     }
 
-
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.K))
+        {
+            Temp(null);
+        }
+    }
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
 
@@ -47,7 +54,8 @@ public class LobyViewManager : MonoBehaviour
         {
             Destroy(p.gameObject);
         }
-        foreach(PlayerClient p in SessionManager.instance.Clients)
+        playerObjects.Clear();
+        foreach(PlayerClient p in SessionManager.instance.playerClients)
         {
             LobbyViewPlayerObject playerObject = Instantiate(playerObjectPrefab, playerObjectsGrid.transform);
             playerObject.Initialize(p);

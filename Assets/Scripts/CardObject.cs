@@ -21,6 +21,7 @@ public class CardObject : MonoBehaviour, IPointerClickHandler
     public UnityEvent<int> OnCardCast;
 
     public InGamePlayerManager inGamePlayerManager;
+    PlayerGameCharacter playerGameCharacter;
     public void InitializeCardObject(Card card,HandSlot handSlot,InGamePlayerManager inGamePlayerManager)
     {
         this.inGamePlayerManager = inGamePlayerManager;
@@ -35,8 +36,14 @@ public class CardObject : MonoBehaviour, IPointerClickHandler
 
 
 
+    private void Start()
+    {
+        playerGameCharacter=GetComponentInParent<PlayerGameCharacter>();
+    }
     public void OnPointerClick(PointerEventData eventData)
     {
+
+        if (!playerGameCharacter.IsOwner) return;
         SelectCard();
     }
 
@@ -54,13 +61,13 @@ public class CardObject : MonoBehaviour, IPointerClickHandler
     {
         float manaCost= card.cardData.defaultManaCost;
 
-        if(manaCost> inGamePlayerManager.manaManager.currentMana)
+        if(manaCost> inGamePlayerManager.manaManager.currentMana.Value)
         {
             Debug.Log("Not enough mana");
             return;
         }
 
-        inGamePlayerManager.manaManager.SpendMana(manaCost); 
+        inGamePlayerManager.manaManager.SpendManaServerRPC(manaCost); 
         //managing mana manager reffrence here is not very smart, hmm maybe player reffrence ? 
 
         handSlot.OnCardDeSelected();

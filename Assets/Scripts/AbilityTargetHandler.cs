@@ -6,6 +6,7 @@ public class AbilityTargetHandler : MonoBehaviour
 {
     //TODO: Should be only working on the local client 
 
+    public PlayerGameCharacter playerGameCharacter;
 
 
     public static AbilityTargetHandler instance;
@@ -55,6 +56,9 @@ public class AbilityTargetHandler : MonoBehaviour
 
     private void Update()
     {
+
+        if (!playerGameCharacter.IsOwner) return;
+
         if (!currentlyTargeting) return;
 
         if (targetingType == TargetingType.Enemy)

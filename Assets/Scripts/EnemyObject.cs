@@ -5,11 +5,11 @@ using FishNet;
 using UnityEngine.UI;
 using FishNet.Object.Synchronizing;
 using TMPro;
+using FishNet.Object;
 
-public class EnemyObject : MonoBehaviour,IHighlightable
+public class EnemyObject : NetworkBehaviour,IHighlightable
 {
     //TODO: Turn this into a network object 
-    public EnemyState enemyState = new EnemyState();
 
     public SpriteRenderer targetHighlighter;
 
@@ -18,52 +18,69 @@ public class EnemyObject : MonoBehaviour,IHighlightable
     public TextMeshProUGUI intentValueText;
 
     public Intent_SO currentIntentData;
-    public float intentCharge = 0;
+    public readonly SyncVar<float> intentCharge = new SyncVar<float>();
 
 
     public EnemyHPManager enemyHPManager;
     public class EnemyState
     {
-        public float hp;
 
     }
 
     private void Start()
     {
-        DecideIntent();
+        if (IsServerInitialized)
+        {
+            DecideIntent();
+
+        }
+
+         intentCharge.OnChange += UpdateIntentVisual;
     }
     private void FixedUpdate()
     {
-        ChargeIntent();
+        if (IsServerInitialized)
+        {
+            ChargeIntent();
+        }
     }
 
     //TODO: Decide Intent
+    [ServerRpc(RequireOwnership =false)]
     public void DecideIntent()
     {
-        // always returns attack for now
-        currentIntentData = possibleIntents[Random.Range(0, possibleIntents.Count)];
-        UpdateIntentVisual();
+        DecideIntentObserverRPC(Random.Range(0, possibleIntents.Count));
+    }
+    [ObserversRpc]
+    public void DecideIntentObserverRPC(int selectedIntent)
+    {
+        currentIntentData = possibleIntents[selectedIntent];
+        UpdateIntentVisual(0,0,false);
+
     }
 
     public void ChargeIntent()
     {
-        intentCharge += Time.fixedDeltaTime;
-        if(intentCharge>= currentIntentData.IntentCD)
+        if (currentIntentData == null) return;
+
+        intentCharge.Value += Time.fixedDeltaTime;
+        if(intentCharge.Value>= currentIntentData.IntentCD)
         {
             DoIntent();
-            intentCharge = 0;
+            intentCharge.Value = 0;
             DecideIntent();
         }
-        UpdateIntentVisual();
+
     }
 
 
-    public void UpdateIntentVisual()
+    public void UpdateIntentVisual(float prev,float newVal,bool isOwner)
     {
+        if (currentIntentData == null) return;
         intentImage.sprite= currentIntentData.intentSprite;
         intentFiller.sprite= currentIntentData.intentSprite;
         intentFiller.color= currentIntentData.intentChargeColor;
-        intentFiller.fillAmount = intentCharge / currentIntentData.IntentCD;
+        intentFiller.fillAmount = intentCharge.Value / currentIntentData.IntentCD;
         intentValueText.text = currentIntentData.intentValue.ToString();
     }
 
@@ -84,28 +101,10 @@ public class EnemyObject : MonoBehaviour,IHighlightable
         return FindObjectOfType<PlayerHealthManager>();
     }
 
-    //serverrpc
-    public void TakeDamageServerRPC(float damage)
-    {
 
-        //authoritate 
-        enemyState.hp -= damage;
-        //  SyncHpObserverRPC(enemyState.hp);
-        OnEnemyStateChangeObserverRPC();
-    }
+  
 
-    //observer/client rpc
-    public void SyncHpObserverRPC(float hp)
-    {
-       enemyState.hp = hp;
-       //OnEnemyStateUpdate?.invoke(enemyState);
-    }
-
-    //observeer rpc 
-    public void OnEnemyStateChangeObserverRPC()
-    {
-
-    }
+   
 
     #region LocalFunctions
 
@@ -122,10 +121,6 @@ public class EnemyObject : MonoBehaviour,IHighlightable
     #endregion
 
 
-    public void SyncState()
-    {
-
-    }
 
    
 }

@@ -23,6 +23,9 @@ public class HandManager : MonoBehaviour
 
 
     public InGamePlayerManager playerManager;
+
+
+    public PlayerGameCharacter playerGameCharacter;
     // when you play a card you get a new card on the exact same spot
     //there might be discard effects that get rid of a card without playing 
     //there might be targeted draw effects 
@@ -31,7 +34,7 @@ public class HandManager : MonoBehaviour
     private void Start()
     {
         playerManager = GetComponentInParent<InGamePlayerManager>();
-
+        playerGameCharacter = GetComponentInParent<PlayerGameCharacter>();
         GetDebugCards();
     }
 
@@ -71,6 +74,7 @@ public class HandManager : MonoBehaviour
 
     private void Update()
     {
+        if (!playerGameCharacter.IsOwner) return;
         if (Input.GetKeyDown(KeyCode.Alpha1)) SelectCard(0);
         if (Input.GetKeyDown(KeyCode.Alpha2)) SelectCard(1);
         if (Input.GetKeyDown(KeyCode.Alpha3)) SelectCard(2);
