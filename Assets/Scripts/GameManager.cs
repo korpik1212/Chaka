@@ -14,6 +14,18 @@ public class GameManager : NetworkBehaviour
     {
         base.OnStartClient();
         AssignClientToGameCharacter();
+
+        if (IsServerInitialized)
+        {
+            playerGameCharacter1.abilityTargetHandler.Activate();
+        }
+
+        else
+        {
+            playerGameCharacter2.abilityTargetHandler.Activate();
+
+        }
+
     }
 
 

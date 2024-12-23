@@ -8,7 +8,7 @@ public class PlayerGameCharacter : NetworkBehaviour
 {
     public TextMeshProUGUI nameText;
 
-
+    public AbilityTargetHandler abilityTargetHandler;
     public void OwnerAssigned(PlayerClient playerClient)
     {
         nameText.text = playerClient.playerName;

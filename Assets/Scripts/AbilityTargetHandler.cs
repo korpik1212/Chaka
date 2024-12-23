@@ -10,10 +10,12 @@ public class AbilityTargetHandler : MonoBehaviour
 
 
     public static AbilityTargetHandler instance;
-    private void Awake()
+   
+
+    public void Activate()
     {
-        if (instance != null) Destroy(this);
-        if (instance == null) instance = this;
+        this.gameObject.SetActive(true);
+        instance = this;
     }
 
     public CardObject currentlySelectedCardObject;
